@@ -1,0 +1,238 @@
+:root {
+  --bg: #dfe0cf;          /* soft sage */
+  --bg-glow: #ecebdc;
+  --card: #f3f1e6;
+  --text: #3b2c23;        /* warm brown ink */
+  --muted: #7d6f63;
+  --rule: rgba(59, 44, 35, 0.15);
+  --walnut: #7a4a2c;
+  --walnut-dark: #5b3520;
+  --rose: #cf8f84;
+  --mustard: #d7a54a;
+  --olive: #74804f;
+  --red: #c0332b;
+  --red-dark: #9e2720;
+  --wrong: #b5503f;
+  --right: #5f7a3c;
+  --face: #ebe4d4;
+  --shadow: 0 16px 34px -20px rgba(70, 45, 25, 0.55);
+  --sans: "DM Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --marker: "Permanent Marker", "Comic Sans MS", cursive;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  background: radial-gradient(ellipse 80% 55% at 50% 0%, var(--bg-glow) 0%, transparent 75%), var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 600px; margin: 0 auto; padding: 36px 16px 40px; }
+
+/* ── Masthead ───────────────────────────── */
+.masthead { text-align: center; }
+h1 { font-family: var(--sans); font-weight: 700; font-size: clamp(34px, 8vw, 44px); letter-spacing: -0.02em; line-height: 1.1; }
+.tagline { color: var(--muted); font-size: clamp(17px, 4.6vw, 20px); margin-top: 6px; }
+
+/* ── Score ──────────────────────────────── */
+.stub {
+  margin: 20px auto 0; width: fit-content; min-width: 130px; padding: 6px 18px 8px; text-align: center;
+  background: var(--card); border: 1px solid var(--rule); border-radius: 999px; box-shadow: var(--shadow);
+}
+.stat-label { display: block; font: 600 10px var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.stat-value { display: inline-block; font: 600 26px/1.2 var(--mono); color: var(--walnut); font-variant-numeric: tabular-nums; }
+.stat-value.bump { animation: bump 0.6s ease; }
+@keyframes bump { 30% { transform: scale(1.35); color: var(--right); } }
+
+/* ── Reel-to-reel deck ──────────────────── */
+.main { margin-top: 26px; display: flex; flex-direction: column; align-items: center; }
+.player {
+  width: min(440px, 100%);
+  padding: 0 14px;
+  border-radius: 12px;
+  /* walnut cabinet with grain */
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px, rgba(255,255,255,0.04) 7px 8px, transparent 8px 13px),
+    linear-gradient(90deg, var(--walnut-dark), var(--walnut) 30%, var(--walnut) 70%, var(--walnut-dark));
+  box-shadow: var(--shadow);
+}
+.face {
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.18) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #efe8d9, #d9cfbb);
+  border-left: 1px solid rgba(0,0,0,0.25); border-right: 1px solid rgba(0,0,0,0.25);
+  padding: 14px 12px 14px;
+}
+.deck {
+  display: block; width: 100%; border: 0; background: none; padding: 0; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; border-radius: 8px;
+}
+.deck:disabled { cursor: default; }
+.deck:focus-visible { outline: 3px solid var(--mustard); outline-offset: 2px; }
+.deck svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.pack { fill: #5b3b28; stroke: #46301f; stroke-width: 1; }
+.tape-path { fill: none; stroke: #5b3b28; stroke-width: 2.5; stroke-linejoin: round; }
+.roller { fill: #c9bfab; stroke: #8f8571; stroke-width: 1.5; }
+.head { fill: #8c7865; }
+.reel { transform-box: fill-box; transform-origin: center; }
+
+.playing .reel { animation: spin 2.2s linear infinite; }
+.playing .reel-r { animation-duration: 1.5s; }
+.playing .tape-path { stroke-dasharray: 5 3; animation: run 0.4s linear infinite; stroke: #6a4630; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes run { to { stroke-dashoffset: -8; } }
+
+/* New song: the reels whir backwards (rewind) */
+.deck.insert .reel { animation: rewind 0.9s cubic-bezier(.2, .7, .3, 1); }
+@keyframes rewind { from { transform: rotate(0); } to { transform: rotate(-900deg); } }
+
+/* masking-tape label */
+.label {
+  display: block; margin: 10px auto 0; width: fit-content; max-width: 92%; min-width: 46%;
+  padding: 4px 18px 5px; text-align: center; color: #2c2420;
+  background: linear-gradient(180deg, #efe2bd, #e5d5a9);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  transform: rotate(-1.2deg);
+  clip-path: polygon(1% 0, 99% 4%, 100% 50%, 98.5% 100%, 0.5% 96%, 0 45%);
+}
+.label-title { display: block; font: 21px/1.25 var(--marker); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.label-sub { display: block; font: 500 10px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+.label.correct .label-title { color: var(--right); }
+.deck.insert + .label { animation: slap 0.45s ease 0.3s backwards; }
+@keyframes slap { from { opacity: 0; transform: rotate(-6deg) scale(1.1); } }
+
+.controls { border-top: 3px solid var(--red); padding-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.controls { box-shadow: inset 0 1px 0 rgba(255,255,255,0.5); }
+.vu {
+  position: relative; width: 84px; height: 44px; border-radius: 5px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 120%, #fff1c9, #f0cf82 70%, #dcb15d);
+  box-shadow: inset 0 0 0 2px #5b4a3c, inset 0 4px 8px rgba(0, 0, 0, 0.25);
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.playing .vu { opacity: 1; }
+.vu-scale {
+  position: absolute; left: 50%; top: 108%; width: 116px; height: 116px; transform: translate(-50%, -50%); border-radius: 50%;
+  background: repeating-conic-gradient(from -50deg, #4a3b30 0 1deg, transparent 1deg 10deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 62%, #000 63% 68%, transparent 69%);
+          mask: radial-gradient(circle, transparent 0 62%, #000 63% 68%, transparent 69%);
+}
+.vu-needle { position: absolute; left: 50%; bottom: -6px; width: 2px; height: 44px; background: #3a2c22; transform-origin: bottom center; transform: rotate(-48deg); transition: transform 0.4s; }
+.vu-word { position: absolute; left: 6px; bottom: 3px; font: 700 9px var(--sans); color: #5b4a3c; }
+.playing .vu-needle { animation: vu 0.9s ease-in-out infinite; }
+.playing .vu-needle.n2 { animation-duration: 0.75s; animation-delay: -0.3s; }
+@keyframes vu {
+  0% { transform: rotate(-10deg); } 15% { transform: rotate(18deg); } 30% { transform: rotate(2deg); }
+  45% { transform: rotate(26deg); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(14deg); } 100% { transform: rotate(-10deg); }
+}
+.led { width: 10px; height: 10px; border-radius: 50%; background: #8c5a50; box-shadow: inset 0 1px 2px rgba(0,0,0,0.4); margin-left: 4px; }
+.playing .led { background: #e2604c; box-shadow: 0 0 9px #e2604c; }
+.key {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 700 13px var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: #3b2c23;
+  background: linear-gradient(180deg, #faf6ec, #e2d8c4); border: 1px solid #a99c86; border-radius: 6px;
+  padding: 11px 18px; cursor: pointer;
+  box-shadow: 0 4px 0 #a99c86, 0 6px 10px rgba(70, 45, 25, 0.25);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.key-icon { color: var(--red); font-size: 12px; }
+.key:disabled { cursor: default; color: #9d9182; }
+.key:disabled .key-icon { color: #b3a898; }
+.key:active:not(:disabled), .playing .key { transform: translateY(3px); box-shadow: 0 1px 0 #a99c86, 0 2px 4px rgba(70, 45, 25, 0.2); }
+.key:focus-visible { outline: 2px solid var(--mustard); outline-offset: 3px; }
+
+/* ── Status, buttons ────────────────────── */
+.status { margin-top: 16px; min-height: 1.5em; font-size: 14px; color: var(--muted); text-align: center; }
+.status.error { color: var(--wrong); }
+
+button { font-family: var(--sans); }
+.primary-btn, .submit-btn {
+  font: 700 13px var(--sans); letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--red); color: #fbf4e6; border: 0; border-radius: 8px; padding: 11px 20px; cursor: pointer;
+}
+.primary-btn:hover, .submit-btn:hover:not(:disabled) { background: var(--red-dark); }
+.ghost-btn {
+  font: 700 13px var(--sans); letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--text); border: 1.5px solid var(--rule); border-radius: 8px; padding: 10px 18px; cursor: pointer;
+}
+.ghost-btn:hover { border-color: var(--text); }
+.link-btn { background: none; border: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; font-size: 13px; cursor: pointer; }
+.link-btn:hover { color: var(--text); }
+
+/* ── Guess form ─────────────────────────── */
+.guess { width: 100%; margin-top: 18px; }
+.guess-row { display: flex; gap: 10px; }
+.combo { position: relative; flex: 1; min-width: 0; }
+#guess {
+  width: 100%; font: 500 16px var(--sans); color: var(--text);
+  background: var(--card); border: 1.5px solid var(--rule); border-radius: 8px; padding: 11px 14px;
+}
+#guess::placeholder { color: var(--muted); }
+#guess:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px rgba(207, 143, 132, 0.3); }
+
+.suggestions {
+  position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px);
+  list-style: none; background: var(--card); border: 1.5px solid var(--rule); border-radius: 8px;
+  box-shadow: var(--shadow); max-height: 240px; overflow-y: auto;
+}
+.suggestions li { padding: 9px 14px; cursor: pointer; font-size: 15px; }
+.suggestions li + li { border-top: 1px solid var(--rule); }
+.suggestions li[aria-selected="true"], .suggestions li:hover { background: #ecd9cf; }
+.suggestions mark { background: none; color: inherit; font-weight: 700; }
+
+.guess-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.pips { display: inline-flex; gap: 6px; }
+.pips i { width: 10px; height: 10px; border-radius: 50%; background: var(--rose); display: block; transition: background 0.2s, transform 0.2s; }
+.pips i.used { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); transform: scale(0.85); }
+
+.feedback { min-height: 1.6em; margin-top: 14px; font-size: 15px; text-align: center; }
+.feedback.wrong { color: var(--wrong); }
+.feedback.right { color: var(--right); font-weight: 700; }
+.shake { animation: shake 0.35s ease; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+/* ── Reveal ─────────────────────────────── */
+.reveal {
+  width: 100%; margin-top: 6px; padding: 20px 18px 18px; text-align: center;
+  background: var(--card); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow);
+  animation: rise 0.35s ease;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+.reveal-kicker { font: 600 11px var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.reveal-title { font-weight: 700; font-size: clamp(24px, 6vw, 32px); line-height: 1.15; margin: 6px 0; letter-spacing: -0.01em; }
+.reveal-meta { font-size: 14px; color: var(--muted); }
+.bonus {
+  margin: 14px auto 0; max-width: 40ch; padding: 10px 14px; border-radius: 8px;
+  background: #f5e6c2; border: 1px solid #e3c784; color: #6b4b14; font-size: 14px;
+  animation: rise 0.4s ease 0.15s backwards;
+}
+.bonus strong { display: block; font-size: 13px; letter-spacing: 0.04em; margin-bottom: 2px; }
+.reveal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+
+.colophon { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted); text-align: center; }
+.colophon .sep { margin: 0 6px; opacity: 0.6; }
+.colophon a { color: var(--text); text-underline-offset: 3px; }
+.colophon a:hover { color: var(--walnut); }
+
+[hidden] { display: none !important; }
+
+.yt-wrap { position: fixed; left: 0; bottom: 0; width: 200px; height: 200px; opacity: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+
+@media (max-width: 420px) {
+  .page { padding-top: 26px; }
+  .guess-row { flex-direction: column; }
+  .submit-btn { padding: 12px; }
+  .vu { width: 72px; }
+  .player { padding: 0 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playing .reel { animation-duration: 8s; }
+  .playing .vu-needle { animation: none; transform: rotate(8deg); }
+  .deck.insert .reel, .deck.insert + .label { animation: none; }
+}
