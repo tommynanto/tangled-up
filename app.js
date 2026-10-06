@@ -148,11 +148,14 @@
     state.primed = false;
     setPhase("loading", primeFailures ? "Re-loading the tape…" : "Loading the tape…");
     yt.call("mute");
-    yt.call("loadVideoById", { videoId: song.videoId, startSeconds: startAt(song) });
+    // Queue the track, then press play once it's cued. On real (non-localhost) sites YouTube blocks
+    // loadVideoById() from starting on its own, but allows cue-then-play once the player is unlocked.
+    yt.call("cueVideoById", { videoId: song.videoId, startSeconds: startAt(song) });
 
-    let lastT = -1, advancing = 0;
+    let lastT = -1, advancing = 0, playSent = false;
     loop = setInterval(() => {
       if (my !== token) return stopLoop();
+      if (!playSent && (yt.st() === YT.PlayerState.CUED || Date.now() - t0 > 1500)) { playSent = true; yt.call("playVideo"); }
       const t = yt.time();
       if (isRealSong(song) && t > lastT) advancing++; else advancing = 0;
       lastT = t;
@@ -164,7 +167,7 @@
         setPhase("ready");
         return;
       }
-      if (Date.now() - t0 > 3000 && [-1, 5].includes(yt.st()) && !state.needsTap) {
+      if (Date.now() - t0 > 3500 && [-1, 5].includes(yt.st())) {
         // Browser blocked autoplay (common on phones). Let the first tap do the priming instead.
         stopLoop();
         state.needsTap = true;
@@ -212,7 +215,13 @@
     const my = ++token, song = state.song, s = startAt(song), len = CLIP_SECONDS;
     setPhase("clip", needsPrime ? "Cueing…" : "Playing…");
     if (needsPrime) yt.call("mute"); else { yt.call("unMute"); yt.call("setVolume", 100); }
-    if (needsPrime) yt.call("loadVideoById", { videoId: song.videoId, startSeconds: s });
+    if (needsPrime) {
+      // This runs inside the user's tap. Browsers only "unlock" the player if that tap starts
+      // playback with playVideo() on the already-loaded track — loadVideoById() doesn't count,
+      // and without the unlock every later track would stall too.
+      if (yt.id() !== song.videoId) yt.call("cueVideoById", { videoId: song.videoId, startSeconds: s });
+      yt.call("playVideo");
+    }
     else { yt.call("seekTo", s, true); yt.call("playVideo"); }
 
     // YouTube only reports its clock every ~250ms, so the clip is timed by counting the
