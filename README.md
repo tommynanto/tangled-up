@@ -32,5 +32,5 @@ python3 -m http.server 8000
 ```
 Then open http://localhost:8000. Opening `index.html` straight from disk won't work, because YouTube embeds need a real web address.
 
-## Credit
-Inspired by [Revolution 1](https://akharazian.github.io/revolution1/) by Ara Kharazian.
+## Credit / Inspiration
+https://akharazian.github.io/revolution1/
